@@ -15,7 +15,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 
 (def nrows 5)
-(def ncols 7)
+(def ncols 6)
 
 (def α (/ π 10))                        ; curvature of the columns
 (def β (/ π 32))                        ; curvature of the rows
@@ -28,20 +28,28 @@
 (def last-15u-row 3)                    ; controls which should be the last row to have 1.5u keys on the outer column
 
 (def extra-row false)                   ; adds an extra bottom row to the outer columns
-(def inner-column true)                 ; adds an extra inner column (two less rows than nrows)
+(def inner-column false)                 ; adds an extra inner column (two less rows than nrows)
+
+(def f-index-col 1)                  ; index finger column, we strat counting from inside
+(def f-middle-col (+ f-index-col 1)) ; middle finger column, we strat counting from inside
+(def f-ring-col (+ f-middle-col 1))  ; ring finger column, we strat counting from inside
+(def f-little-col (+ f-ring-col 1))  ; little finger column, we strat counting from inside
+
 
 (def column-style :standard)
 
 (defn column-offset [column]
   (if inner-column
-    (cond (<= column 1) [0 -2 0]
-          (= column 3) [0 2.82 -4.5]
-          (= column 5) [0 -12 5.64]    ; original [0 -5.8 5.64]
-          (> column 5) [0 -12 7.8]
+    (cond (<= column f-index-col) [0 -2 0]
+          (= column f-ring-col) [0 2.82 -4.5]
+          (= column f-little-col) [0 -12 5.64]    ; original [0 -5.8 5.64]
+          (> column f-little-col) [0 -12 7.8]
           :else [0 0 0])
-    (cond (= column 2) [0 2.82 -4.5]
-          (= column 4) [0 -12 5.64]    ; original [0 -5.8 5.64]
-          (> column 4) [0 -12 7.8]
+    (cond (<= column f-index-col) [0 0 0] ;;  copied from WB
+          (= column f-middle-col) [0 2.82 -4.5]
+          (= column f-ring-col)   [0 0 0]
+          (= column f-little-col) [0 -6 5]
+          (> column f-little-col) [0 -6 5]
           :else [0 0 0])))
 
 (def thumb-offsets [-8 17 21])
