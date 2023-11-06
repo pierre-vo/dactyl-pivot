@@ -846,6 +846,29 @@
     )
 )
 
+(def bottom-plate-inner-axis
+    (let [m3t (->>(cylinder (- inner-radius 0.2)  10)
+                  (rotate (/ π 2) [1 0 0])
+                  (with-fn 30))]
+        (union
+            ; low bar
+            (->> m3t
+                (translate floor-anchor-posur)
+                )
+            (->> m3t
+                (translate floor-anchor-poslr))
+        )
+    )
+)
+
+
+(def bottom-plate
+    (union
+       bottom-plate-inner-axis
+      ;;  bottom-plate-axis-body
+    )
+)
+
 (def thumb-plate-arm-screw-holes
     (let [m3t (->>(cylinder inner-radius  20)
                   (rotate (/ π 2) [1 0 0])
@@ -945,19 +968,87 @@
         (union
             (hull tent-pole-neartop tent-pole-nearbottom)
             (hull tent-pole-fartop tent-pole-farbottom)
-            (hull tent-pole-nearbottom tent-pole-farbottom)
+            ;; if we want the screw to set the position, this part needs to rotate
+            ;; (hull tent-pole-nearbottom tent-pole-farbottom)
         )
           ;holes for vertical beams between north and south beams
         (hull 
             (->> m3t
-                (translate leftpoint-upper)
-                )
+                (translate leftpoint-upper))
             (->> m3t
                 (translate leftpoint-lower))
+        )
+        (hull 
+            (->> m3t
+                (translate leftpoint-upper)
+                (translate [0 (* wall-thickness -2) -60]))
+            (->> m3t
+                (translate leftpoint-lower)
+                (translate [0 (* wall-thickness 4) -60]))
         )
       )
   )
 )
+
+(def tent-pole-bottom
+  (let [m3t (->>(cylinder (- inner-radius 0.2)  10)
+                  (rotate (/ π 2) [1 0 0])
+                  (with-fn 30))]
+      (difference
+      ;; (union
+          (union
+            (->> m3t
+                (translate leftpoint-upper)
+                (translate [0 (* wall-thickness -2) -60]))
+            (->> m3t
+                (translate leftpoint-lower)
+                (translate [0 (* wall-thickness 4) -60]))
+            (->> (cylinder (* inner-radius 2.2) 75)
+                    (rotate (/ π 2) [1 0 0])
+                    (translate leftpoint-xz)
+                    (translate [0 5 -60]) ; manual positioning for now
+            )
+            ;; foot
+            (->> (cylinder (* inner-radius 2.2) 3)
+                    ;; (rotate (/ π 2) [1 0 0])
+                    (translate leftpoint-upper)
+                    (translate [0 (* wall-thickness -2) -60])
+                    (translate [0 -8 -2.2]) ; manual positioning for now
+            )
+            ;; foot
+            (->> (cylinder (* inner-radius 2.2) 3)
+                    ;; (rotate (/ π 2) [1 0 0])
+                    (translate leftpoint-lower)
+                    (translate [0 (* wall-thickness 4) -60])
+                    (translate [0 8 -2.2]) ; manual positioning for now
+            )
+            ;; cube for the hole and nut holder
+            (->> (cube 8 8 8)
+                    (translate leftpoint-xz)
+                    (translate [0 5 -60]) ; manual positioning for now
+            )
+          )
+          ;; hole
+          (->> (cylinder inner-radius 10)
+                  (rotate (/ π 2) [0 1 0])
+                  (translate leftpoint-xz)
+                  (translate [0 5 -60]) ; manual positioning for now
+          )
+          ;; (->> (m3hex 0.3)
+          ;;     (rotate (/ π 2) [0 1 0])
+          ;;     (translate leftpoint-xz)
+          ;;     (translate [3 5 -60]) ; manual positioning for now
+          ;;     )
+          (->> (hex-slot :left 0)
+              (rotate (/ π 2) [0 1 0])
+              (translate leftpoint-xz)
+              (translate [-2 5 -75]) ; manual positioning for now
+          )
+      )
+  )
+)
+
+
 ;;;;;;;;;;;;;;;;;;
 ;; Final Export ;;
 ;;;;;;;;;;;;;;;;;;
@@ -978,11 +1069,13 @@
 
 (def dactyl-top-right
    (union
-        finger-plate
-        thumb-plate
+        ;; finger-plate
+        ;; thumb-plate
         finger-plate-rack
-        thumb-plate-rack
+        ;; thumb-plate-rack
         tent-pole
+        tent-pole-bottom
+        ;; bottom-plate
     )
 )
 
