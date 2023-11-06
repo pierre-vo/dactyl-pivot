@@ -23,7 +23,7 @@
 (def centercol 4)                       ; controls left-right tilt / tenting (higher number is more tenting)
 (def tenting-angle (/ π 12))            ; or, change this for more precise tenting control
 
-(def pinky-15u true)                    ; controls whether the outer column uses 1.5u keys
+(def pinky-15u false)                   ; controls whether the outer column uses 1.5u keys
 (def first-15u-row 0)                   ; controls which should be the first row to have 1.5u keys on the outer column
 (def last-15u-row 3)                    ; controls which should be the last row to have 1.5u keys on the outer column
 
@@ -1029,7 +1029,7 @@
             )
           )
           ;; hole
-          (->> (cylinder inner-radius 10)
+          (->> (binding [*fn* 30] (cylinder inner-radius 10))
                   (rotate (/ π 2) [0 1 0])
                   (translate leftpoint-xz)
                   (translate [0 5 -60]) ; manual positioning for now
@@ -1092,6 +1092,8 @@
       (write-scad finger-plate-rack))
 (spit "things/open/thumb-plate-rack-right.scad"
       (write-scad thumb-plate-rack))
+(spit "things/open/bottom-plate-right.scad"
+      (write-scad tent-pole-bottom))
 
 (spit "things/open/assembled-left.scad"
       (write-scad (mirror [-1 0 0] dactyl-top-right)))
@@ -1104,5 +1106,8 @@
       (write-scad (mirror [-1 0 0] finger-plate-rack)))
 (spit "things/open/thumb-plate-rack-left.scad"
       (write-scad (mirror [-1 0 0] thumb-plate-rack)))
+(spit "things/open/bottom-plate-left.scad"
+      (write-scad (mirror [-1 0 0] tent-pole-bottom)))
 
 (spit "things/open/tent-pole.scad" (write-scad tent-pole))
+(spit "things/open/single.scad" (write-scad single-plate))
